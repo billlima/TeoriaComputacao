@@ -1,0 +1,4 @@
+R1: Faça F vá_para R2;
+R2: Se T1 então vá_para R1 senão vá_para R3;
+R3: Faça G vá_para R4;
+R4: Se T2 então vá_para R5 senão vá_para R1;

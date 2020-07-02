@@ -1,0 +1,4 @@
+1: faça F vá_para 2
+2: se T1 então vá_para 1 senão vá_para 3
+3: faça G vá_para 4
+4: se T2 então vá_para 5 senão vá_para 1
