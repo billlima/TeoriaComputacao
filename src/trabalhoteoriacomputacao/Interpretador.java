@@ -22,13 +22,14 @@ public class Interpretador {
     public boolean temCiclo = false;
 
     public List<Instrucao> interpretarProgramaMonolitico(List<String> linhasPrograma) throws Exception {
-        
+
         this.instrucoesLista = converterLinhasParaInstrucoes(linhasPrograma);
 
         instrucoesLista = instrucoesLista.stream().map(i -> definirResultadosInstrucao1(i)).collect(Collectors.toList());
         definirParadas();
-        definirResultadosInstrucao2();        
-        
+        definirResultadosInstrucaoTeste();
+        definirCiclosInstrucaoOperacao();
+
         return instrucoesLista;
     }
 
@@ -50,38 +51,49 @@ public class Interpretador {
 
         return i;
     }
+    
+    /**
+     * Busca os ciclos em instruções do tipo OPERACAO
+     */
+    private void definirCiclosInstrucaoOperacao() throws Exception {
+        if (temCiclo) return;
+        
+        for (Instrucao i : instrucoesLista) {
+            if (i.getTipo().equals(InstrucaoTipoEnum.OPERACAO.getTipo())) {
+                for (boolean resultado : new boolean[]{true, false}) {
+                    deteccaoCicloInfinitoLista = new ArrayList<>();
+                    if (verificarCicloInfinitoInstrucaoOperacao(resultado, i.getRotuloLinha())) {
+                        temCiclo = true;
+                    }
+                }
+            }
+        }
+    }
 
     /**
-     * Define os as operacoes nos resultados das instrucoes do tipo e detecção de ciclo
+     * Define os as operacoes nos resultados das instrucoes do tipo TESTE e
+     * detecta ciclo e parada
      *
      * @param i
      * @return
      */
-    private void definirResultadosInstrucao2() throws Exception {
+    private void definirResultadosInstrucaoTeste() throws Exception {
         for (Instrucao i : instrucoesLista) {
-            if (i.getTipo().equals(InstrucaoTipoEnum.OPERACAO.getTipo())) {
-                if (i.getResultado(true)[1].equals(i.getRotuloLinha())) {
-                    temCiclo = true;
-                    i.setResultado(true, "ciclo", "w");
-                }
-                if (i.getResultado(false)[1].equals(i.getRotuloLinha())) {
-                    temCiclo = true;
-                    i.setResultado(false, "ciclo", "w");
-                }
-                
-            } else {
+            if (i.getTipo().equals(InstrucaoTipoEnum.TESTE.getTipo())) {
                 for (boolean resultado : new boolean[]{true, false}) {
 
                     if (i.getResultado(resultado)[0].equals("")) {
                         deteccaoCicloInfinitoLista = new ArrayList<>();
 
-                        String res = getInstrucaoOperacaoResultado(resultado, i.getRotuloLinha());
+                        String res = getOperacaoInstrucaoTeste(resultado, i.getRotuloLinha());
 
                         switch (res) {
                             case "e":
+                            case "parada":
                                 i.setResultado(resultado, "parada", "e");
                                 break;
                             case "e*":
+                            case "ciclo":
                                 temCiclo = true;
                                 i.setResultado(resultado, "ciclo", "w");
                                 break;
@@ -93,8 +105,32 @@ public class Interpretador {
             }
         }
     }
+    
+    private boolean verificarCicloInfinitoInstrucaoOperacao(boolean resultado, String rotuloLinha) throws Exception {
+        if (deteccaoCicloInfinitoLista.contains(rotuloLinha)) {
+            return true;
+        }
+        
+        deteccaoCicloInfinitoLista.add(rotuloLinha);
+        
+        Instrucao i = buscarInstrucaoPorRotulo(instrucoesLista, rotuloLinha);
+        
+        if (i == null || i.isParada(resultado)) {
+            return false;
+        }
+        
+        return verificarCicloInfinitoInstrucaoOperacao(resultado, i.getResultado(resultado)[1]);
+    }
 
-    private String getInstrucaoOperacaoResultado(boolean resultado, String rotuloLinha) throws Exception {
+    /**
+     * Procura as operações para as instruções que são TESTE
+     * 
+     * @param resultado
+     * @param rotuloLinha
+     * @return
+     * @throws Exception 
+     */
+    private String getOperacaoInstrucaoTeste(boolean resultado, String rotuloLinha) throws Exception {
         if (deteccaoCicloInfinitoLista.contains(rotuloLinha)) {
             return "e*";
         }
@@ -102,15 +138,15 @@ public class Interpretador {
         deteccaoCicloInfinitoLista.add(rotuloLinha);
 
         Instrucao i = buscarInstrucaoPorRotulo(instrucoesLista, rotuloLinha);
-        
+
         if (i.getTipo().equals(InstrucaoTipoEnum.OPERACAO.getTipo())) {
-           return i.getResultado(resultado)[0];
+            return i.getResultado(resultado)[0];
         }
         if (i.isResultadoParada(resultado)) {
             return "e";
         }
         if (i.getResultado(resultado)[0].equals("")) {
-            return getInstrucaoOperacaoResultado(resultado, i.getResultado(resultado)[1]);
+            return getOperacaoInstrucaoTeste(resultado, i.getResultado(resultado)[1]);
         } else {
             return i.getResultado(resultado)[0];
         }
@@ -139,14 +175,18 @@ public class Interpretador {
     }
 
     private List<Instrucao> converterLinhasParaInstrucoes(List<String> linhas) {
-        return linhas.stream().map(linha -> converterLinhaParaInstrucao1(linha)).collect(Collectors.toList());
+        List<Instrucao> lista = new ArrayList<>();
+        for (int indice = 0; indice<linhas.size();indice++) {
+            lista.add(converterLinhaParaInstrucao1(linhas.get(indice), indice));
+        }
+        return lista;
     }
 
-    private Instrucao converterLinhaParaInstrucao1(String linha) {
+    private Instrucao converterLinhaParaInstrucao1(String linha, Integer indice) {
         linha = linha.replaceAll(";", "");
-        
-        Instrucao i = new Instrucao();
 
+        Instrucao i = new Instrucao();
+        i.setIndice(indice);
         i.setStringLinha(linha);
 
         i.setRotuloLinha(getRotuloLinha(linha));

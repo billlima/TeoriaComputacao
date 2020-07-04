@@ -25,6 +25,24 @@ public class Principal extends javax.swing.JFrame {
 
     public Principal() {
         initComponents();
+
+        taOrigem.setText("Exemplos: \n"
+                + "\n"
+                + "1: faça F vá_para 2\n"
+                + "2: se T1 então vá_para 1 senão vá_para 3\n"
+                + "3: faça G vá_para 4\n"
+                + "4: se T2 então vá_para 5 senão vá_para 1\n"
+                + "\n"
+                + "1: faça G vá_para 2\n"
+                + "2: se T2 então vá_para 1 senão vá_para 3\n"
+                + "\n"
+                + "1: faça G vá_para 2\n"
+                + "2: se T2 então vá_para 3 senão vá_para 4\n"
+                + "3: se T3 então vá_para 2 senão vá_para 4\n"
+                + "\n"
+                + "1: faça G vá_para 2\n"
+                + "2: se T2 então vá_para 3 senão vá_para 4\n"
+                + "3: se T3 então vá_para 2 senão vá_para 4");
     }
 
     /**
@@ -161,22 +179,22 @@ public class Principal extends javax.swing.JFrame {
 
     private void imprimirResultado(List<Instrucao> instrucoesLista, boolean temCiclo) {
         String result = "";
-        for (Instrucao i: instrucoesLista) {
+        for (Instrucao i : instrucoesLista) {
             result += i.getRotuloLinha() + ": ";
             result += getResultado(true, i) + " " + getResultado(false, i) + "\n";
         }
         if (temCiclo) {
-            result += "w:(ciclo, w), (ciclo, w)";
+            result += "w: (ciclo, w), (ciclo, w)";
         }
         taDestino.setText(result);
     }
-    
+
     private String getResultado(boolean resultado, Instrucao i) {
         if (i.isParada(resultado)) {
             return ("(parada, e)");
         }
         return "(" + i.getResultado(resultado)[0] + ", " + i.getResultado(resultado)[1] + ")";
-        
+
     }
 
     /**
@@ -210,6 +228,7 @@ public class Principal extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Principal().setVisible(true);
+
             }
         });
     }

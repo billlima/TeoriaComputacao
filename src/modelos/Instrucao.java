@@ -11,6 +11,7 @@ package modelos;
  */
 public class Instrucao {
     
+    private Integer indice;
     private String tipo;
     private String rotuloLinha;
     private String rotuloTeste;
@@ -19,6 +20,14 @@ public class Instrucao {
     private String[] resultadoFalso;
     private boolean resultadoVerdadeiroParada;
     private boolean resultadoFalsoParada;
+
+    public Integer getIndice() {
+        return indice;
+    }
+
+    public void setIndice(Integer indice) {
+        this.indice = indice;
+    }
 
     public String getTipo() {
         return tipo;
