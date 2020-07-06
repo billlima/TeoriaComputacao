@@ -13,10 +13,7 @@ import java.util.Objects;
  */
 public enum InstrucaoTipoEnum {
     TESTE("teste"),
-    OPERACAO("operacao"),
-    PARADA("parada"),
-    TESTES_ENCADEADOS("testes_encadeados"),
-    TESTES_ENCADEADOS_CICLO_INFINITO("testes_encadeados_ciclo_infinito");
+    OPERACAO("operacao");
     
     private final String tipo;
     

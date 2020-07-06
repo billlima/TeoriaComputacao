@@ -25,10 +25,9 @@ public class Interpretador {
 
         this.instrucoesLista = converterLinhasParaInstrucoes(linhasPrograma);
 
-        instrucoesLista = instrucoesLista.stream().map(i -> definirResultadosInstrucao1(i)).collect(Collectors.toList());
+        instrucoesLista = instrucoesLista.stream().map(i -> definirResultados(i)).collect(Collectors.toList());
         definirParadas();
         definirResultadosInstrucaoTeste();
-        definirCiclosInstrucaoOperacao();
 
         return instrucoesLista;
     }
@@ -40,36 +39,18 @@ public class Interpretador {
      * @param i
      * @return
      */
-    private Instrucao definirResultadosInstrucao1(Instrucao i) {
+    private Instrucao definirResultados(Instrucao i) {
         String[] palavras = removeRotuloInstrucao(i.getStringLinha());
 
         if (i.getTipo().equals(InstrucaoTipoEnum.OPERACAO.getTipo())) {
             i = definirResultadosIstrucaoOperacao(i, palavras);
         } else {
-            i = definirRotuloEResultadoFalsoInstrucaoTeste(i, palavras);
+            i = definirRotuloEEncaminhamentosTeste(i, palavras);
         }
 
         return i;
     }
     
-    /**
-     * Busca os ciclos em instruções do tipo OPERACAO
-     */
-    private void definirCiclosInstrucaoOperacao() throws Exception {
-        if (temCiclo) return;
-        
-        for (Instrucao i : instrucoesLista) {
-            if (i.getTipo().equals(InstrucaoTipoEnum.OPERACAO.getTipo())) {
-                for (boolean resultado : new boolean[]{true, false}) {
-                    deteccaoCicloInfinitoLista = new ArrayList<>();
-                    if (verificarCicloInfinitoInstrucaoOperacao(resultado, i.getRotuloLinha())) {
-                        temCiclo = true;
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * Define os as operacoes nos resultados das instrucoes do tipo TESTE e
      * detecta ciclo e parada
@@ -104,22 +85,6 @@ public class Interpretador {
                 }
             }
         }
-    }
-    
-    private boolean verificarCicloInfinitoInstrucaoOperacao(boolean resultado, String rotuloLinha) throws Exception {
-        if (deteccaoCicloInfinitoLista.contains(rotuloLinha)) {
-            return true;
-        }
-        
-        deteccaoCicloInfinitoLista.add(rotuloLinha);
-        
-        Instrucao i = buscarInstrucaoPorRotulo(instrucoesLista, rotuloLinha);
-        
-        if (i == null || i.isParada(resultado)) {
-            return false;
-        }
-        
-        return verificarCicloInfinitoInstrucaoOperacao(resultado, i.getResultado(resultado)[1]);
     }
 
     /**
@@ -166,7 +131,7 @@ public class Interpretador {
         return i;
     }
 
-    private Instrucao definirRotuloEResultadoFalsoInstrucaoTeste(Instrucao i, String[] palavras) {
+    private Instrucao definirRotuloEEncaminhamentosTeste(Instrucao i, String[] palavras) {
         i.setRotuloTeste(palavras[1]);
         i.setResultado(true, "", palavras[4]);
         i.setResultado(false, "", palavras[7]);
