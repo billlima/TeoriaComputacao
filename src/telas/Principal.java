@@ -26,23 +26,29 @@ public class Principal extends javax.swing.JFrame {
     public Principal() {
         initComponents();
 
-        taOrigem.setText("Exemplos: \n"
-                + "\n"
-                + "1: faça F vá_para 2\n"
-                + "2: se T1 então vá_para 1 senão vá_para 3\n"
-                + "3: faça G vá_para 4\n"
-                + "4: se T2 então vá_para 5 senão vá_para 1\n"
-                + "\n"
-                + "1: faça G vá_para 2\n"
-                + "2: se T2 então vá_para 1 senão vá_para 3\n"
-                + "\n"
+        taOrigem.setText(
+//                "Exemplos: \n"
+                ""
+//                + "1: faça F vá_para 2\n"
+//                + "2: se T1 então vá_para 1 senão vá_para 3\n"
+//                + "3: faça G vá_para 4\n"
+//                + "4: se T2 então vá_para 5 senão vá_para 1\n"
+//                + "\n"
+//                + "1: faça G vá_para 2\n"
+//                + "2: se T2 então vá_para 1 senão vá_para 3\n"
+//                + "\n"
                 + "1: faça G vá_para 2\n"
                 + "2: se T2 então vá_para 3 senão vá_para 4\n"
                 + "3: se T3 então vá_para 2 senão vá_para 4\n"
-                + "\n"
-                + "1: faça G vá_para 2\n"
-                + "2: se T2 então vá_para 3 senão vá_para 4\n"
-                + "3: se T3 então vá_para 2 senão vá_para 4");
+//                + "\n"
+//                + "1: faça G vá_para 2\n"
+//                + "2: se T2 então vá_para 3 senão vá_para 4\n"
+//                + "3: se T3 então vá_para 2 senão vá_para 4\n\n\n"
+//                + "1: faça F vá_para 2\n"
+//                + "2: se T1 então vá_para 1 senão vá_para 3\n"
+//                + "3: faça G vá_para 4\n"
+//                + "4: se T2 então vá_para 5 senão vá_para 1\n"
+                        + "");
     }
 
     /**

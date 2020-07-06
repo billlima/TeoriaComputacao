@@ -26,6 +26,10 @@ public class Interpretador {
         this.instrucoesLista = converterLinhasParaInstrucoes(linhasPrograma);
 
         instrucoesLista = instrucoesLista.stream().map(i -> definirResultadosInstrucao1(i)).collect(Collectors.toList());
+        
+        GeradorFluxo geradorFluxo = new GeradorFluxo(instrucoesLista);
+        geradorFluxo.gerar();
+        
         definirParadas();
         definirResultadosInstrucaoTeste();
         definirCiclosInstrucaoOperacao();
