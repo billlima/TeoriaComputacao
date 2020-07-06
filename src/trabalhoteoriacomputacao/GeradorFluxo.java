@@ -11,8 +11,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import modelos.Instrucao;
 import utils.InstrucaoTipoEnum;
 
@@ -27,6 +25,9 @@ public class GeradorFluxo {
     private final String P = "PARTIDA";
     private final String E = "PARADA";
     private final String S = "SETA";
+    private final Integer LABEL = 2;
+    private final Integer VERDADEIRO = 5;
+    private final Integer FALSO = 8;
 
     private final List<Instrucao> instrucoesLista;
     private List<String> variaveis = new ArrayList<>();
@@ -93,13 +94,13 @@ public class GeradorFluxo {
         variaveis.add(PARADA_VAR);
 
         instrucoesLista.forEach((i) -> {
-            add(i, getValor(i.getStringLinha(), 2));
+            add(i, getValor(i.getStringLinha(), LABEL));
         });
     }
 
     private void addOperadorFaca(Instrucao i) {
         if (isOperacao(i.getTipo())) {
-            saida.append(operadores.get(getValor(i.getStringLinha(), 2).toLowerCase()));
+            saida.append(operadores.get(getValor(i.getStringLinha(), LABEL).toLowerCase()));
             saida.append(operadores.get(S));
             ultimoTipoTeste = false;
         }
@@ -116,7 +117,7 @@ public class GeradorFluxo {
         if (isParada(operacaoTrue)) {
             saida.append(operadores.get(E)).append("\n");
         } else {
-            saida.append(getValor(instrucoesLista.get(operacaoTrue).getStringLinha(), 2).toLowerCase()).append("\n");
+            saida.append(getValor(instrucoesLista.get(operacaoTrue).getStringLinha(), LABEL).toLowerCase()).append("\n");
         }
     }
 
@@ -127,7 +128,7 @@ public class GeradorFluxo {
         if (isParada(operacaoFalse)) {    
             saida.append(operadores.get(E)).append("\n");
         } else {
-            saida.append(getValor(instrucoesLista.get(operacaoFalse).getStringLinha(), 2).toLowerCase()).append("\n");
+            saida.append(getValor(instrucoesLista.get(operacaoFalse).getStringLinha(), LABEL).toLowerCase()).append("\n");
         }
     }
 
@@ -137,10 +138,10 @@ public class GeradorFluxo {
                 saida.append(operadores.get(operacao)).append("\n");
             }
 
-            int operacaoTrue = Integer.parseInt(getValor(i.getStringLinha(), 5)) - 1;
+            int operacaoTrue = Integer.parseInt(getValor(i.getStringLinha(), VERDADEIRO)) - 1;
             addOperacaoVerdadeira(operacaoTrue, operacao);
 
-            int operacaoFalse = Integer.parseInt(getValor(i.getStringLinha(), 8)) - 1;
+            int operacaoFalse = Integer.parseInt(getValor(i.getStringLinha(), FALSO)) - 1;
             addOperacaoFalsa(operacaoFalse, operacao);
 
             ultimoTipoTeste = true;
@@ -159,7 +160,7 @@ public class GeradorFluxo {
                 addOperadorFaca(i);
                 return i;
             }).forEachOrdered((i) -> {
-                addOperadorTeste(i, getValor(i.getStringLinha(), 2).toLowerCase());
+                addOperadorTeste(i, getValor(i.getStringLinha(), LABEL).toLowerCase());
             }); 
             
             writer = new PrintWriter(INPUT_FLOWCHART, "UTF-8");
