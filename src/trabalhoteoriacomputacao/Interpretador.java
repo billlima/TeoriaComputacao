@@ -25,7 +25,11 @@ public class Interpretador {
 
         this.instrucoesLista = converterLinhasParaInstrucoes(linhasPrograma);
 
-        instrucoesLista = instrucoesLista.stream().map(i -> definirResultados(i)).collect(Collectors.toList());
+        instrucoesLista = instrucoesLista.stream().map(i -> definirResultadosEtapa1(i)).collect(Collectors.toList());
+        
+        GeradorFluxo geradorFluxo = new GeradorFluxo(instrucoesLista);
+        geradorFluxo.gerar();
+        
         definirParadas();
         definirResultadosInstrucaoTeste();
 
@@ -39,7 +43,7 @@ public class Interpretador {
      * @param i
      * @return
      */
-    private Instrucao definirResultados(Instrucao i) {
+    private Instrucao definirResultadosEtapa1(Instrucao i) {
         String[] palavras = removeRotuloInstrucao(i.getStringLinha());
 
         if (i.getTipo().equals(InstrucaoTipoEnum.OPERACAO.getTipo())) {
