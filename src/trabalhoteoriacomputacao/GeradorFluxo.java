@@ -147,7 +147,52 @@ public class GeradorFluxo {
             ultimoTipoTeste = true;
         }
     }
+    
+    private boolean hasTestesEncadeados(){
+        Boolean anteriorEhTeste = false;
+        for (Instrucao instrucao : instrucoesLista) {
+            if (isTeste(instrucao.getTipo())){
+                if (anteriorEhTeste){
+                    return true;
+                }
+                anteriorEhTeste = true;
+            } else {
+                anteriorEhTeste = false;
+            }
+        }
+        return false;
+    }
 
+    private void printSeta(){
+        System.out.println("                    | ");
+        System.out.println("                    v");
+    }
+    
+    private void printHeader(){
+        System.out.println("---------------------------------------------");
+        System.out.println("=================DIAGRAMA==================");
+        System.out.println("---------------------------------------------");
+        System.out.println("                (partida)");
+    }
+    
+    private String resultadoTeste(String resultado){
+        return Integer.valueOf(resultado) > instrucoesLista.size() ? "(Parada)" : "  "+resultado;
+    }
+      
+    private void printDiagrama(){
+        printHeader();
+        for (Instrucao instrucao : instrucoesLista) {
+            printSeta();
+            if (isOperacao(instrucao.getTipo())){
+                System.out.println("                   ["+instrucao.getResultadoVerdadeiro()[0]+"]");
+            } else if (isTeste(instrucao.getTipo())){
+                String resultadoFalso = resultadoTeste(instrucao.getResultadoFalso()[1]);
+                String resultadoVerdadeiro = resultadoTeste(instrucao.getResultadoVerdadeiro()[1]);
+                System.out.println(resultadoFalso+"<--FALSE-- <"+instrucao.getRotuloTeste()+"> --TRUE--> "+resultadoVerdadeiro);
+            }
+        }
+    }
+    
     public void gerar() {
         PrintWriter writer = null;
         try {
@@ -155,7 +200,8 @@ public class GeradorFluxo {
             saida = new StringBuilder();
             variaveis.forEach((linha) -> {
                 saida.append(linha).append("\n");
-            }); saida.append(operadores.get(P)).append(operadores.get(S));
+            });
+            saida.append(operadores.get(P)).append(operadores.get(S));
             instrucoesLista.stream().map((i) -> {
                 addOperadorFaca(i);
                 return i;
@@ -163,16 +209,20 @@ public class GeradorFluxo {
                 addOperadorTeste(i, getValor(i.getStringLinha(), LABEL).toLowerCase());
             }); 
             
-            writer = new PrintWriter(INPUT_FLOWCHART, "UTF-8");
-            writer.print(saida.toString());
-            writer.close();
+            if (hasTestesEncadeados()){
+                printDiagrama();
+            } else {
+                writer = new PrintWriter(INPUT_FLOWCHART, "UTF-8");
+                writer.print(saida.toString());
+                writer.close();
+            }            
             
         } catch (FileNotFoundException ex) {
             System.out.println("deu ruim");
         } catch (UnsupportedEncodingException ex) {
             System.out.println("deu ruim");
         } finally {
-            writer.close();
+            if (writer != null){ writer.close();}
         }
     }
 
