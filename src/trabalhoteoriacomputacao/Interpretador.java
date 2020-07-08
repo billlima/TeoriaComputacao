@@ -20,6 +20,11 @@ public class Interpretador {
     List<Instrucao> instrucoesLista;
     List<String> deteccaoCicloInfinitoLista;
     public boolean temCiclo = false;
+    private boolean gerouGrafico = false;
+    
+    public boolean getGerouGrafico() {
+        return gerouGrafico;
+    }
 
     public List<Instrucao> interpretarProgramaMonolitico(List<String> linhasPrograma) throws Exception {
 
@@ -27,8 +32,8 @@ public class Interpretador {
 
         instrucoesLista = instrucoesLista.stream().map(i -> definirResultadosEtapa1(i)).collect(Collectors.toList());
         
-        GeradorFluxo geradorFluxo = new GeradorFluxo(instrucoesLista);
-        geradorFluxo.gerar();
+        GeradorFluxoNovo geradorFluxoNovo = new GeradorFluxoNovo(instrucoesLista);
+        gerouGrafico = geradorFluxoNovo.gerar();
         
         definirParadas();
         definirResultadosInstrucaoTeste();
