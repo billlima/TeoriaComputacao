@@ -5,7 +5,6 @@
  */
 package trabalhoteoriacomputacao;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,8 +50,16 @@ public class Interpretador {
                 throw new Exception("Linha " + (x+1) + " inválida!");
             }
             
-            if (linhaSplit[0].split(":").length != 1) {
+            String[] rotuloSplit = linhaSplit[0].split(":");
+            
+            if (rotuloSplit.length != 1) {
                 throw new Exception("Linha " + (x+1) + " inválida: Rótulo inválido");
+            }
+            
+            try {
+                Integer.parseInt(rotuloSplit[0]);
+            } catch (NumberFormatException e) {
+                throw new Exception("Linha " + (x+1) + " inválida: Rótulo da linha ser número");
             }
             
             if (linhaSplit.length == 5) {
@@ -75,11 +82,8 @@ public class Interpretador {
     }
 
     /**
-     * Define os resultados verdadeiros e falsos, se for do tipo Teste e o teste
-     * preenche somente o rótulo da linha destino
-     *
-     * @param i
-     * @return
+     * Define os resultados verdadeiros e falsos, se for do tipo Teste preenche 
+     * somente o rótulo da linha destino
      */
     private Instrucao definirResultadosEtapa1(Instrucao i) {
         String[] palavras = removeRotuloInstrucao(i.getStringLinha());
@@ -96,9 +100,6 @@ public class Interpretador {
     /**
      * Define os as operacoes nos resultados das instrucoes do tipo TESTE e
      * detecta ciclo e parada
-     *
-     * @param i
-     * @return
      */
     private void definirResultadosInstrucaoTeste() throws Exception {
         for (Instrucao i : instrucoesLista) {
@@ -131,11 +132,6 @@ public class Interpretador {
 
     /**
      * Procura as operações para as instruções que são TESTE
-     * 
-     * @param resultado
-     * @param rotuloLinha
-     * @return
-     * @throws Exception 
      */
     private String getOperacaoInstrucaoTeste(boolean resultado, String rotuloLinha) throws Exception {
         if (deteccaoCicloInfinitoLista.contains(rotuloLinha)) {
@@ -237,6 +233,25 @@ public class Interpretador {
         }
 
         return lista.isEmpty() ? null : lista.get(0);
+    }  
+    
+    public String getResultado(List<Instrucao> instrucoesLista, boolean temCiclo) {
+        String result = "";
+        for (Instrucao i : instrucoesLista) {
+            result += i.getRotuloLinha() + ": ";
+            result += getResultado(true, i) + " " + getResultado(false, i) + "\n";
+        }
+        if (temCiclo) {
+            result += "w: (ciclo, w), (ciclo, w)";
+        }
+        return result;
     }
+    
+    private String getResultado(boolean resultado, Instrucao i) {
+        if (i.isParada(resultado)) {
+            return ("(parada, e)");
+        }
+        return "(" + i.getResultado(resultado)[0] + ", " + i.getResultado(resultado)[1] + ")";
 
+    }
 }

@@ -197,7 +197,7 @@ public class Principal extends javax.swing.JFrame {
         Interpretador i = new Interpretador();
         try {
             List<Instrucao> lista = i.interpretarProgramaMonolitico(linhasPrograma);
-            imprimirResultado(lista, i.temCiclo);
+            taDestino.setText(i.getResultado(lista, i.temCiclo));
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Programa Inválido", 0);
             taDestino.setText("");
@@ -210,26 +210,6 @@ public class Principal extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Erro ao gerar o fluxo: " + ex.getMessage(), "Erro", 0);
             }
         }
-    }
-
-    private void imprimirResultado(List<Instrucao> instrucoesLista, boolean temCiclo) {
-        String result = "";
-        for (Instrucao i : instrucoesLista) {
-            result += i.getRotuloLinha() + ": ";
-            result += getResultado(true, i) + " " + getResultado(false, i) + "\n";
-        }
-        if (temCiclo) {
-            result += "w: (ciclo, w), (ciclo, w)";
-        }
-        taDestino.setText(result);
-    }
-
-    private String getResultado(boolean resultado, Instrucao i) {
-        if (i.isParada(resultado)) {
-            return ("(parada, e)");
-        }
-        return "(" + i.getResultado(resultado)[0] + ", " + i.getResultado(resultado)[1] + ")";
-
     }
 
     /**
