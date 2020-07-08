@@ -90,16 +90,16 @@ public class GeradorFluxoNovo {
     private String adicionarOperacaoTeste(String operacao, Instrucao instrucao, boolean operacaoVerdadeira) {
         int posicao = operacaoVerdadeira ? getValorVerdadeiro(instrucao.getStringLinha()) : getValorFalse(instrucao.getStringLinha());
         String tipo = operacaoVerdadeira ? OP_VERDADE : OP_FALSA;
-        
+
         if (naoEhParada(posicao)) {
             String operacaoTeste = getValor(instrucoes.get(posicao).getStringLinha(), 2);
-            
+
             if (!operacaoVerdadeira) {
                 addLinha(instrucoes.get(posicao));
             }
             return getStrTesteCasos(operacao, tipo, operacaoTeste);
         } else {
-            //tratar parada teste
+            validarNaoProcessado();
             return getStrTesteCasos(operacao, tipo, PARADA);
         }
     }
@@ -110,46 +110,40 @@ public class GeradorFluxoNovo {
         writer.close();
     }
 
-    public void addLinha(Instrucao instrucao) {
-        for(String s : instrucoesProcessadas) {
-            System.out.println("L:" + s);
-        }
-        
-        System.out.println("Processando: " + instrucao.getStringLinha());
-        
-        if (instrucoesProcessadas.contains(instrucao.getStringLinha())) {
-            
-            for (Instrucao i : instrucoes) {
-                if (!instrucoesProcessadas.contains(i.getStringLinha())) {
-                    addLinha(i);
-                }
+    public void validarNaoProcessado() {
+        for (Instrucao i : instrucoes) {
+            if (!instrucoesProcessadas.contains(i.getStringLinha())) {
+                addLinha(i);
             }
-            
+        }
+    }
+
+    public void addLinha(Instrucao instrucao) {
+        if (instrucoesProcessadas.contains(instrucao.getStringLinha())) {
+            validarNaoProcessado();
             return;
         } else {
-            
             if (isOperacao(instrucao.getTipo())) {
                 String operacao = getValor(instrucao.getStringLinha(), 2);
                 fluxo.append(getStrOperacao(ultimaOperacaoPrintada, operacao, ultimaOperacaoTeste));
                 ultimaOperacaoPrintada = operacao;
                 ultimaOperacaoTeste = false;
                 instrucoesProcessadas.add(instrucao.getStringLinha());
-                
+
                 int proximo = (Integer.parseInt(getValor(instrucao.getStringLinha(), 4)) - 1);
-                
+
                 if (naoEhParada(proximo)) {
                     addLinha(instrucoes.get(proximo));
                 } else {
-                    //pensar na parada
-                    
+                    validarNaoProcessado();
                 }
             } else {
                 String operacao = getValor(instrucao.getStringLinha(), 2);
 
                 fluxo.append(getStrTeste(ultimaOperacaoPrintada, operacao, ultimaOperacaoTeste));
-                
+
                 instrucoesProcessadas.add(instrucao.getStringLinha());
-                
+
                 fluxo.append(adicionarOperacaoTeste(operacao, instrucao, true));
                 fluxo.append(adicionarOperacaoTeste(operacao, instrucao, false));
 
@@ -161,14 +155,13 @@ public class GeradorFluxoNovo {
 
     public boolean gerar() throws FileNotFoundException, UnsupportedEncodingException, Exception {
         fluxo.append(getCabecalho());
-
         addLinha(instrucoes.get(0));
-
-//        instrucoes.forEach((instrucao) -> {
-//            addLinha(instrucao);
-//        });
+        
+        
+        
+        
+        String saida = fluxo.toString().replace("F --> G[G]", "");
         criarArquivo(fluxo.toString());
-
         return cliente.gerarImagemFluxo(INPUT).sucesso();
     }
 
