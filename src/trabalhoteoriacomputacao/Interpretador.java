@@ -5,7 +5,9 @@
  */
 package trabalhoteoriacomputacao;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import modelos.Instrucao;
@@ -20,13 +22,11 @@ public class Interpretador {
     List<Instrucao> instrucoesLista;
     List<String> deteccaoCicloInfinitoLista;
     public boolean temCiclo = false;
-    private boolean gerouGrafico = false;
+    public boolean gerouGrafico = false;
     
-    public boolean getGerouGrafico() {
-        return gerouGrafico;
-    }
-
     public List<Instrucao> interpretarProgramaMonolitico(List<String> linhasPrograma) throws Exception {
+        
+        validarLinhas(linhasPrograma);
 
         this.instrucoesLista = converterLinhasParaInstrucoes(linhasPrograma);
 
@@ -39,6 +39,39 @@ public class Interpretador {
         definirResultadosInstrucaoTeste();
 
         return instrucoesLista;
+    }
+    
+    private void validarLinhas(List<String> linhas) throws Exception {
+        for (int x = 0; x < linhas.size(); x++) {
+            
+            String linha = linhas.get(x);            
+            String[] linhaSplit = linha.split(" ");
+            
+            if (linhaSplit.length != 5 && linhaSplit.length != 9) {
+                throw new Exception("Linha " + (x+1) + " inválida!");
+            }
+            
+            if (linhaSplit[0].split(":").length != 1) {
+                throw new Exception("Linha " + (x+1) + " inválida: Rótulo inválido");
+            }
+            
+            if (linhaSplit.length == 5) {
+                validarPalavra(linhaSplit[1], new String[]{"faça", "faca"}, x + 1);
+                validarPalavra(linhaSplit[3], new String[]{"va_para", "vá_para"}, x + 1);
+            } else {
+                validarPalavra(linhaSplit[1], new String[]{"se"}, x + 1);
+                validarPalavra(linhaSplit[3], new String[]{"entao", "então"}, x + 1);
+                validarPalavra(linhaSplit[4], new String[]{"va_para", "vá_para"}, x + 1);
+                validarPalavra(linhaSplit[6], new String[]{"senao", "senão"}, x + 1);
+                validarPalavra(linhaSplit[7], new String[]{"va_para", "vá_para"}, x + 1);
+            }
+        }
+    }
+    
+    private void validarPalavra(String valor, String[] palavras, int linha) throws Exception {
+        if (!Arrays.asList(palavras).contains(valor.toLowerCase())) {
+            throw new Exception("Linha " + linha + " inválida: Palavra '"+valor+"' inválida");
+        }
     }
 
     /**

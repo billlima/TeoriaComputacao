@@ -32,24 +32,7 @@ public class Principal extends javax.swing.JFrame {
     public Principal() {
         initComponents();
 
-        taOrigem.setText(
-//                "Exemplos: \n"
-                ""
-//                + "1: faça F vá_para 2\n"
-//                + "2: se T1 então vá_para 1 senão vá_para 3\n"
-//                + "3: faça G vá_para 4\n"
-//                + "4: se T2 então vá_para 5 senão vá_para 1\n"
-//                + "\n"
-//                + "1: faça G vá_para 2\n"
-//                + "2: se T2 então vá_para 1 senão vá_para 3\n"
-//                + "\n"
-//                + "1: faça G vá_para 2\n"
-//                + "2: se T2 então vá_para 3 senão vá_para 4\n"
-//                + "3: se T3 então vá_para 2 senão vá_para 4\n"
-//                + "\n"
-//                + "1: faça G vá_para 2\n"
-//                + "2: se T2 então vá_para 3 senão vá_para 4\n"
-//                + "3: se T3 então vá_para 2 senão vá_para 4\n\n\n"
+        taOrigem.setText(""
                 + "1: faça F vá_para 2\n"
                 + "2: se T1 então vá_para 1 senão vá_para 3\n"
                 + "3: faça G vá_para 4\n"
@@ -202,8 +185,11 @@ public class Principal extends javax.swing.JFrame {
     }
 
     private void converter() {
+        iconeImagem.setIcon(null);
+        
         if (taOrigem.getText() == null || taOrigem.getText().trim().equals("")) {
             JOptionPane.showMessageDialog(this, "Informe o programa monolítico!", "Erro", 0);
+            return;
         }
 
         List<String> linhasPrograma = Arrays.asList(taOrigem.getText().split("\n"));
@@ -213,11 +199,11 @@ public class Principal extends javax.swing.JFrame {
             List<Instrucao> lista = i.interpretarProgramaMonolitico(linhasPrograma);
             imprimirResultado(lista, i.temCiclo);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Programa inválido: " + ex.getMessage(), "Erro", 0);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Programa Inválido", 0);
             taDestino.setText("");
         }
         
-        if (i.getGerouGrafico()) {
+        if (i.gerouGrafico) {
             try {
                 iconeImagem.setIcon(Utils.getScaledImageIcon(MermaidCli.SAIDA, iconeImagem.getHeight() - 10));
             } catch (IOException ex) {
