@@ -161,7 +161,7 @@ public class GeradorFluxoNovo {
         
         
         String saida = fluxo.toString().replace("F --> G[G]", "");
-        criarArquivo(fluxo.toString());
+        criarArquivo(saida);
         return cliente.gerarImagemFluxo(INPUT).sucesso();
     }
 
