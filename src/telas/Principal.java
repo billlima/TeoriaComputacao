@@ -5,14 +5,13 @@
  */
 package telas;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -116,7 +115,7 @@ public class Principal extends javax.swing.JFrame {
             imagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(imagemLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(iconeImagem, javax.swing.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)
+                .addComponent(iconeImagem, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
                 .addContainerGap())
         );
         imagemLayout.setVerticalGroup(
@@ -147,7 +146,7 @@ public class Principal extends javax.swing.JFrame {
                                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(58, 58, 58)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(imagem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -220,9 +219,7 @@ public class Principal extends javax.swing.JFrame {
         
         if (i.getGerouGrafico()) {
             try {
-                BufferedImage image = ImageIO.read(new File(MermaidCli.SAIDA));
-                
-                iconeImagem.setIcon(new ImageIcon(image));
+                iconeImagem.setIcon(Utils.getScaledImageIcon(MermaidCli.SAIDA, iconeImagem.getHeight() - 10));
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Erro ao gerar o fluxo: " + ex.getMessage(), "Erro", 0);
             }

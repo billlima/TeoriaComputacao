@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import modelos.Instrucao;
-import modelos.RetornoComando;
 import utils.InstrucaoTipoEnum;
 
 /**

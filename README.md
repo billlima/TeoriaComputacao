@@ -23,3 +23,9 @@ Instale a depência localmente:
 ### Exibir ajuda:
 
 `fluxo-teoria-computacao -h`
+
+
+
+## Exemplos
+
+
