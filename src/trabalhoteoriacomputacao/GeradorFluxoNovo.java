@@ -157,7 +157,7 @@ public class GeradorFluxoNovo {
         fluxo.append(getCabecalho());
         addLinha(instrucoes.get(0));
         
-        String saida = fluxo.toString().replace("F --> G[G]", "").replace("A --> T2{T2}", "");
+        String saida = fluxo.toString().replace("F --> G[G]", "").replace("A --> T2{T2}", "").replace("B --> T3{T3}", "");
         
         criarArquivo(saida);
         return cliente.gerarImagemFluxo(INPUT).sucesso();
