@@ -98,7 +98,7 @@ public class Principal extends javax.swing.JFrame {
             imagemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(imagemLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(iconeImagem, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addComponent(iconeImagem, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
                 .addContainerGap())
         );
         imagemLayout.setVerticalGroup(
